@@ -6,14 +6,14 @@ from ac_tk import tokenPers as tokenVlp
 from ac_tk import group_id as group_id
 
 def postsDataGet (group_id):
-    count = 100  # количество постов, получаемых за 1 запрос
-    offset = 0  # начальное смещение
+    count = 100  # number of Posts got through one request
+    offset = 0  # first offset (there is no offset at the beginnning)
     r = requests.get('https://api.vk.com/method/wall.get', params={'owner_id': group_id,
                                                                    'count': 0,
                                                                    'v': '5.103',
                                                                    'access_token': tokenVlp})
     response = r.json()
-    post_count = response['response']['count']  # количество постов в группе или профиле
+    post_count = response['response']['count']  # number of Posts in Business group or Profile
     print('Количество постов в сообществе:',response['response']['count'])
     print('Дата публикации', ',', 'Ссылка', ',', 'Просмотров', ',', 'Количество лайков',
           ',', 'Количество репостов', ',', 'Количество комментариев')
@@ -23,21 +23,21 @@ def postsDataGet (group_id):
                                  'access_token': tokenVlp, 'offset': offset})
         response = r.json()
         print('офсет!')
-        # запускаем цикл для обработки ответа
+        # cycle begins
         for i in range(100):
-            post_date = datetime.datetime.fromtimestamp(  # функция преобразования
+            post_date = datetime.datetime.fromtimestamp(  # time converting function
                 int(response['response']['items'][i]['date'])
-            ).strftime('%Y-%m-%d')  # фортма преобразования Год-Месяц Час-Минута-Секунда
-            post_date_h = datetime.datetime.fromtimestamp(  # функция преобразования
+            ).strftime('%Y-%m-%d')  # converting in Year-Month-Day
+            post_date_h = datetime.datetime.fromtimestamp(  # time converting function
                 int(response['response']['items'][i]['date'])
-            ).strftime('%H:%M:%S')  # фортма преобразования Год-Месяц Час-Минута-Секунда
-            post_id = response['response']['items'][i]['id']  # id поста в сообществе
+            ).strftime('%H:%M:%S')  # converting in Hours-Minutes-Seconds
+            post_id = response['response']['items'][i]['id']  # post id in community's group
             group_id = response['response']['items'][i][
-                'owner_id']  # id сообщества . В версиях API ниже 5.7 вместо поля owner_id приходит to_id.
-            views_count = response['response']['items'][i]['views']['count']  # количество просмотров
-            likes_count = response['response']['items'][i]['likes']['count']  # количество лайков
-            repost_count = response['response']['items'][i]['reposts']['count']  # количество репостов
-            comments_count = response['response']['items'][i]['comments']['count']  # количество комментариев
+                'owner_id']  # group id . If use API verion below 5.7 instead of owner_id you will receive to_id.
+            views_count = response['response']['items'][i]['views']['count']  # Views numbers
+            likes_count = response['response']['items'][i]['likes']['count']  # Likes numbers
+            repost_count = response['response']['items'][i]['reposts']['count']  # Shares numbers
+            comments_count = response['response']['items'][i]['comments']['count']  # Comments numbers
             postLink = 'https://vk.com/wall' + str(group_id) + '_' + str(post_id)
             print(post_date, ',', post_date_h, ',', postLink, ',', likes_count, ',', repost_count, ',', comments_count)
 
